@@ -6,23 +6,16 @@ static $registry = null;
 function error_handler_for_export_import($errno, $errstr, $errfile, $errline) {
 	global $registry;
 	
-	switch ($errno) {
-		case E_NOTICE:
-		case E_USER_NOTICE:
-			$errors = "Notice";
-			break;
-		case E_WARNING:
-		case E_USER_WARNING:
-			$errors = "Warning";
-			break;
-		case E_ERROR:
-		case E_USER_ERROR:
-			$errors = "Fatal Error";
-			break;
-		default:
-			$errors = "Unknown";
-			break;
-	}
+	$errorMessages = [
+		E_NOTICE => 'Notice',
+		E_USER_NOTICE => 'Notice',
+		E_WARNING => 'Warning',
+		E_USER_WARNING => 'Warning',
+		E_ERROR => 'Fatal Error',
+		E_USER_ERROR => 'Fatal Error',
+	];
+
+	$errors = $errorMessages[$errno] ?? 'Unknown';
 	
 	$config = $registry->get('config');
 	$url = $registry->get('url');
