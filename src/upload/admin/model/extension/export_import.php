@@ -158,24 +158,23 @@ class ModelToolExportImport extends Model {
 
 
 	protected function getDefaultWeightUnit() {
-		$weight_class_id = $this->config->get( 'config_weight_class_id' );
+		$weight_class_id = $this->config->get('config_weight_class_id');
 		$language_id = $this->getDefaultLanguageId();
-		$sql = "SELECT unit FROM `".DB_PREFIX."weight_class_description` WHERE language_id='".(int)$language_id."'";
-		$query = $this->db->query( $sql );
+	
+		$sql = "
+			SELECT unit
+			FROM `".DB_PREFIX."weight_class_description`
+			WHERE language_id IN ('$language_id', (SELECT language_id FROM `".DB_PREFIX."language` WHERE code = 'en'))
+			LIMIT 1
+		";
+	
+		$query = $this->db->query($sql);
+	
 		if ($query->num_rows > 0) {
 			return $query->row['unit'];
 		}
-		$sql = "SELECT language_id FROM `".DB_PREFIX."language` WHERE code = 'en'";
-		$query = $this->db->query( $sql );
-		if ($query->num_rows > 0) {
-			$language_id = $query->row['language_id'];
-			$sql = "SELECT unit FROM `".DB_PREFIX."weight_class_description` WHERE language_id='".(int)$language_id."'";
-			$query = $this->db->query( $sql );
-			if ($query->num_rows > 0) {
-				return $query->row['unit'];
-			}
-		}
-		return 'kg';
+	
+		return 'kg'; // Если ни один запрос не вернул результат
 	}
 
 
