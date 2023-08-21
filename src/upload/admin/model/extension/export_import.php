@@ -140,23 +140,21 @@ class ModelToolExportImport extends Model {
 
 	protected function getDefaultLanguageId() {
 		$code = $this->config->get('config_language');
-		$sql = "SELECT language_id FROM `".DB_PREFIX."language` WHERE code = '$code'";
-		$result = $this->db->query( $sql );
-		$language_id = 1;
-		if ($result->rows) {
-			foreach ($result->rows as $row) {
-				$language_id = $row['language_id'];
-				break;
-			}
+		$sql = "SELECT language_id FROM `" . DB_PREFIX . "language` WHERE code = :code";
+		$query = $this->db->query($sql, ['code' => $code]);
+	
+		if ($query->num_rows > 0) {
+			return $query->row['language_id'];
 		}
-		return $language_id;
+	
+		return 1; // Значение по умолчанию
 	}
-
-
+	
 	protected function getLanguages() {
-		$query = $this->db->query( "SELECT * FROM `".DB_PREFIX."language` WHERE `status`=1 ORDER BY `code`" );
+		$query = $this->db->query("SELECT language_id, code FROM `" . DB_PREFIX . "language` WHERE `status`=1 ORDER BY `code`");
 		return $query->rows;
 	}
+	
 
 
 	protected function getDefaultWeightUnit() {
