@@ -74,16 +74,23 @@ class ModelToolExportImport extends Model {
 	}
 
 
-	protected function clean( &$str, $allowBlanks=false ) {
-		$result = "";
-		$n = strlen( $str );
-		for ($m=0; $m<$n; $m++) {
-			$ch = substr( $str, $m, 1 );
-			if (($ch==" ") && (!$allowBlanks) || ($ch=="\n") || ($ch=="\r") || ($ch=="\t") || ($ch=="\0") || ($ch=="\x0B")) {
+	protected function clean(&$str, $allowBlanks = false) {
+		$result = '';
+		$n = mb_strlen($str);
+		$allowedChars = " ";
+		
+		if ($allowBlanks) {
+			$allowedChars .= "\n\r\t\0\x0B";
+		}
+		
+		for ($m = 0; $m < $n; $m++) {
+			$ch = mb_substr($str, $m, 1);
+			if (mb_strpos($allowedChars, $ch) !== false) {
 				continue;
 			}
 			$result .= $ch;
 		}
+		
 		return $result;
 	}
 
