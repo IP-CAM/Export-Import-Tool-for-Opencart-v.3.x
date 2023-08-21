@@ -201,29 +201,30 @@ class ModelToolExportImport extends Model {
 
 
 	protected function getManufacturers() {
-		// find all manufacturers already stored in the database
-		$manufacturer_ids = [];
-		$sql  = "SELECT ms.manufacturer_id, ms.store_id, m.`name` FROM `".DB_PREFIX."manufacturer_to_store` ms ";
-		$sql .= "INNER JOIN `".DB_PREFIX."manufacturer` m ON m.manufacturer_id=ms.manufacturer_id";
-		$result = $this->db->query( $sql );
 		$manufacturers = [];
+	
+		$sql = "
+			SELECT ms.manufacturer_id, ms.store_id, m.name
+			FROM `" . DB_PREFIX . "manufacturer_to_store` ms
+			INNER JOIN `" . DB_PREFIX . "manufacturer` m ON m.manufacturer_id = ms.manufacturer_id
+		";
+		$result = $this->db->query($sql);
+	
 		foreach ($result->rows as $row) {
 			$manufacturer_id = $row['manufacturer_id'];
 			$store_id = $row['store_id'];
 			$name = $row['name'];
+	
 			if (!isset($manufacturers[$name])) {
-				$manufacturers[$name] = [];
+				$manufacturers[$name] = [
+					'manufacturer_id' => $manufacturer_id,
+					'store_ids' => []
+				];
 			}
-			if (!isset($manufacturers[$name]['manufacturer_id'])) {
-				$manufacturers[$name]['manufacturer_id'] = $manufacturer_id;
-			}
-			if (!isset($manufacturers[$name]['store_ids'])) {
-				$manufacturers[$name]['store_ids'] = [];
-			}
-			if (!in_array($store_id,$manufacturers[$name]['store_ids'])) {
-				$manufacturers[$name]['store_ids'][] = $store_id;
-			}
+	
+			$manufacturers[$name]['store_ids'][] = $store_id;
 		}
+	
 		return $manufacturers;
 	}
 
