@@ -95,12 +95,29 @@ class ModelToolExportImport extends Model {
 	}
 
 
-	protected function multiquery( $sql ) {
-		foreach (explode(";\n", $sql) as $sql) {
-			$sql = trim($sql);
-			if ($sql) {
-				$this->db->query($sql);
+	protected function multiquery($sql) {
+		$queries = explode(";\n", $sql);
+	
+		foreach ($queries as $query) {
+			$query = trim($query);
+			if (!empty($query)) {
+				$this->executeQuery($query);
 			}
+		}
+	}
+	
+	protected function executeQuery($query) {
+		$result = $this->db->query($query);
+	
+		if (!$result) {
+			$error = $this->db->error();
+			$errorMessage = "Error executing query: $query\nError message: {$error['message']}\nError code: {$error['code']}";
+	
+			// Логирование ошибки, например:
+			// $this->log->write($errorMessage);
+	
+			// Или выброс исключения с информацией об ошибке, например:
+			// throw new Exception($errorMessage);
 		}
 	}
 
