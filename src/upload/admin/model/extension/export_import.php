@@ -122,11 +122,8 @@ class ModelToolExportImport extends Model {
 	}
 
 
-	protected function startsWith( $haystack, $needle ) {
-		if (strlen( $haystack ) < strlen( $needle )) {
-			return false;
-		}
-		return (substr( $haystack, 0, strlen($needle) ) == $needle);
+	protected function startsWith($haystack, $needle) {
+		return strpos($haystack, $needle) === 0;
 	}
 
 	protected function endsWith( $haystack, $needle ) {
