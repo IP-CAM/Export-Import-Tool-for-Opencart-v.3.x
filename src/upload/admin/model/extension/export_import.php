@@ -68,9 +68,9 @@ class ModelToolExportImport extends Model {
 	protected $version = '4.10';
 
 
-	public function __construct( $registry ) {
-		parent::__construct( $registry );
-		$this->use_table_seo_url = version_compare(VERSION,'3.0','>=') ? true : false;
+	public function __construct($registry) {
+		parent::__construct($registry);
+		$this->use_table_seo_url = version_compare(VERSION, '3.0', '>=');
 	}
 
 
