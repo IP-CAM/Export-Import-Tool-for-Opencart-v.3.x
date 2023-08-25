@@ -9815,5 +9815,3 @@ if (version_compare(VERSION, '3.0', '>=')) {
 	{
 	}
 }
-
-?>
